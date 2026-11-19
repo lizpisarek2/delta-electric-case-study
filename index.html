@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delta Electric Case Study</title>
+<meta name="description" content="Portfolio case study by Elizabeth Pisarek: strategy, UX, SEO, Webflow build, domain recovery and DNS cutover for Delta Electric Services, Red River, NM.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Single-theme "spec sheet" world built on the client's own brand: navy field, gold signal, cool paper. */
+  --navy:#0A2545; --navy-2:#13335c; --gold:#F5B502; --paper:#F4F7F9; --ink:#14202e; --mute:#566577; --line:#d6dee6; --white:#ffffff; --ok:#1f8a4c;
+  --display:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.6}
+img{max-width:100%;display:block}
+a{color:var(--navy);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.6rem,3.2vw,2.15rem);font-weight:800;color:var(--navy)}
+h3{font-size:1.08rem;font-weight:700;color:var(--navy)}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.prose{max-width:68ch}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+section{padding:72px 0;border-top:1px solid var(--line)}
+.sec-head{display:grid;gap:12px;margin-bottom:36px}
+.num-unused{font-family:var(--mono);color:var(--gold);background:var(--navy);padding:2px 8px;border-radius:3px;font-size:.78rem;margin-right:8px}
+
+/* Hero */
+.hero{background:var(--navy);color:#dbe5ef;padding:28px 0 64px;border:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:56px;font-family:var(--mono);font-size:.8rem;color:#9fb3c8}
+.topbar b{color:var(--white);font-weight:500}
+.hero-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:48px;align-items:end}
+.hero h1{color:var(--white);font-size:clamp(2.2rem,5.2vw,3.7rem);font-weight:800;letter-spacing:-.01em}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero .lede{margin-top:20px;font-size:1.13rem;max-width:58ch}
+.hero-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:#2a4a72;border:1px solid #2a4a72;border-radius:8px;overflow:hidden}
+.hero-meta div{background:var(--navy-2);padding:14px 16px}
+.hero-meta dt{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:#8ea6bf}
+.hero-meta dd{margin:4px 0 0;color:var(--white);font-weight:500;font-size:.95rem}
+.hero-meta dd a{color:var(--gold)}
+.snapshot{margin-top:32px;display:flex;gap:14px;align-items:flex-start;border:1px dashed #4a6a92;border-radius:8px;padding:14px 16px;font-size:.92rem;max-width:760px}
+.snapshot .dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--gold);margin-top:7px}
+
+/* Scores */
+.scores{background:var(--white)}
+.score-row{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.gauge{border:1px solid var(--line);border-radius:10px;padding:20px 14px;text-align:center;background:var(--paper)}
+.gauge svg{width:92px;height:92px;margin:0 auto}
+.gauge .lab{margin-top:10px;font-weight:600;font-size:.95rem}
+.gauge .val{font-family:var(--display);font-weight:800;font-size:1.65rem;fill:var(--ink)}
+.dev{font-size:.95rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--mute);margin-bottom:12px}
+.vitals{margin-top:16px;display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.vitals div{padding:14px 16px;border-right:1px solid var(--line)}
+.vitals div:last-child{border-right:0}
+.vitals span{display:block;font-size:.8rem;color:var(--mute)}
+.vitals b{font-family:var(--display);font-size:1.35rem;font-variant-numeric:tabular-nums;color:var(--navy)}
+.fine a.proof{color:var(--navy);font-weight:500}
+.fine{margin-top:14px;font-family:var(--mono);font-size:.76rem;color:var(--mute)}
+
+/* Cards / grids */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:22px}
+.card p+p,.card ul{margin-top:10px}
+ul.ticks{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px}
+ul.ticks li{padding-left:22px;position:relative}
+ul.ticks li::before{content:"";position:absolute;left:2px;top:.62em;width:9px;height:9px;background:var(--gold);transform:rotate(45deg)}
+ul.x li::before{background:#c0392b;transform:none;border-radius:50%}
+
+/* Table */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--white)}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);background:var(--paper);font-weight:500}
+tr:last-child td{border-bottom:0}
+td code,code{font-family:var(--mono);font-size:.86em;background:#eef2f6;padding:1px 6px;border-radius:4px;color:var(--navy);word-break:break-word}
+.pill{display:inline-block;font-family:var(--mono);font-size:.72rem;padding:2px 8px;border-radius:999px;background:#e3f4ea;color:var(--ok);white-space:nowrap}
+.pill.old{background:#fbe9e7;color:#b03a2e}
+
+/* Timeline */
+.timeline{list-style:none;padding:0;margin:0;display:grid;gap:0;border-left:2px solid var(--navy);margin-left:8px}
+.timeline li{position:relative;padding:0 0 26px 28px}
+.timeline li::before{content:"";position:absolute;left:-8px;top:5px;width:14px;height:14px;background:var(--gold);border:2px solid var(--navy);transform:rotate(45deg)}
+.timeline .when{font-family:var(--mono);font-size:.76rem;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.timeline h3{margin:2px 0 6px}
+
+/* Mockups */
+.mock-stage{display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:start}
+.browser{border-radius:10px;overflow:hidden;border:1px solid #b9c6d3;box-shadow:0 18px 40px -22px rgba(10,37,69,.45);background:var(--white)}
+.browser .bar{display:flex;align-items:center;gap:6px;padding:9px 12px;background:#e6ecf1;border-bottom:1px solid #cfd8e1}
+.browser .bar i{width:10px;height:10px;border-radius:50%;background:#c4ced8}
+.browser .url{margin-left:10px;flex:1;background:var(--white);border-radius:5px;padding:3px 10px;font-family:var(--mono);font-size:.72rem;color:var(--mute)}
+.site{font-family:"Open Sans",Arial,sans-serif}
+.s-head{display:flex;justify-content:space-between;align-items:center;padding:12px 22px;border-bottom:1px solid #e3e9ee;font-size:.78rem}
+.s-brand{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--navy)}
+.s-brand .tri{width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-bottom:19px solid var(--navy)}
+.s-nav{display:flex;gap:14px;color:#3c4c5e}
+.s-call{background:var(--gold);color:var(--navy);font-weight:700;padding:6px 12px;border-radius:4px}
+.s-hero{background:var(--navy);color:#dbe5ef;padding:30px 22px;display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:center}
+.s-eye{font-size:.62rem;letter-spacing:.12em;color:var(--gold);font-weight:700}
+.s-h1{font-size:1.45rem;font-weight:800;color:var(--white);line-height:1.2;margin:8px 0}
+.s-p{font-size:.74rem;line-height:1.55}
+.s-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.s-b1{background:var(--gold);color:var(--navy);font-weight:700;font-size:.7rem;padding:7px 12px;border-radius:4px}
+.s-b2{border:1.5px solid var(--white);color:var(--white);font-weight:700;font-size:.7rem;padding:6px 12px;border-radius:4px}
+.s-card{background:var(--navy-2);border:1px solid #2c4c74;border-radius:8px;padding:14px;font-size:.68rem;display:grid;gap:5px}
+.s-card img{width:64px;margin-bottom:4px}
+.s-card .lic{color:var(--gold);font-weight:800;font-size:.85rem}
+.s-svc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:18px 22px;background:#EFF6F9}
+.s-svc div{background:var(--white);border-radius:6px;padding:10px;font-size:.66rem;font-weight:700;color:var(--navy);border-top:3px solid var(--gold)}
+.phone{width:300px;border:10px solid #101a26;border-radius:34px;overflow:hidden;background:var(--white);box-shadow:0 18px 40px -22px rgba(10,37,69,.55)}
+.phone .s-hero{grid-template-columns:1fr;padding:22px 16px}
+.phone .s-h1{font-size:1.2rem}
+.phone .s-head{padding:10px 14px}
+.phone .s-svc{grid-template-columns:1fr;padding:14px 16px}
+.cap{margin-top:12px;font-size:.85rem;color:var(--mute)}
+
+/* Outline */
+.outline{font-family:var(--mono);font-size:.84rem;line-height:1.9;background:var(--navy);color:#cfdbe7;border-radius:10px;padding:20px 22px;overflow-x:auto}
+.outline .t{color:var(--gold)}
+.outline .i1{padding-left:18px}.outline .i2{padding-left:36px}
+
+/* Toolkit */
+.kit{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.kit .card h3{display:flex;align-items:center;gap:10px}
+.kit .card h3 span{font-family:var(--mono);font-size:.7rem;font-weight:500;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chips li{list-style:none;font-size:.82rem;padding:4px 10px;border-radius:999px;background:#eaf0f5;color:var(--navy);border:1px solid #d3dee8}
+.chips li.k{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.chips{padding:0;margin-bottom:0}
+
+/* Code */
+pre{margin:0;font-family:var(--mono);font-size:.8rem;line-height:1.6;background:#0d1b2c;color:#d4e0ec;border-radius:10px;padding:18px 20px;overflow-x:auto}
+pre .k{color:var(--gold)}
+
+/* Footer */
+footer{background:var(--navy);color:#b9c9da;padding:48px 0;font-size:.95rem}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:end}
+footer b{color:var(--white);font-family:var(--display);font-size:1.25rem;display:block}
+footer a{color:var(--gold)}
+
+@media (max-width:900px){
+  .hero-grid,.two,.mock-stage{grid-template-columns:1fr}
+  .three,.kit{grid-template-columns:1fr 1fr}
+  .score-row{grid-template-columns:repeat(3,1fr)}
+  .vitals{grid-template-columns:repeat(3,1fr)}
+  .vitals div:nth-child(3){border-right:0}
+  .vitals div:nth-child(-n+3){border-bottom:1px solid var(--line)}
+  .phone{margin:0 auto}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .wrap{padding:0 18px}
+  section{padding:52px 0}
+  .three,.kit,.hero-meta{grid-template-columns:1fr}
+  .score-row{grid-template-columns:repeat(2,1fr)}
+  .vitals{grid-template-columns:1fr 1fr}
+  .vitals div{border-right:0;border-bottom:1px solid var(--line)}
+  .s-nav{display:none}
+  .s-hero{grid-template-columns:1fr}
+  .s-svc{grid-template-columns:1fr}
+  .phone{width:100%;max-width:300px}
+}
+/* Archived launch view: Webflow site CSS, copied from the live stylesheet and scoped to .lsx */
+.arch-bar{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--ink);color:#b9c9da;padding:10px 20px;font-family:var(--mono);font-size:.76rem}
+.arch-back{color:var(--gold);font-weight:500;text-decoration:none}
+.lsx{color:#333;background:#fff;font-family:Arial,sans-serif;font-size:14px;line-height:20px;text-size-adjust:100%}
+.lsx *{box-sizing:border-box}
+.lsx img{max-width:100%;vertical-align:middle;display:inline-block}
+.lsx a{background-color:transparent}
+.lsx h1,.lsx h2,.lsx h3{margin-bottom:10px;font-weight:bold;font-family:inherit;text-wrap:wrap}
+.lsx h2{margin-top:20px;font-size:32px;line-height:36px}
+.lsx h3{margin-top:20px;font-size:24px;line-height:30px}
+.lsx p{margin-top:0;margin-bottom:10px}
+.lsx ul{margin-top:0;margin-bottom:10px;padding-left:40px}
+.lsx summary{display:list-item}
+.lsx section{padding:0;border:0}
+.lsx [id^="ls-"]{scroll-margin-top:110px}
+.lsx .de-header { z-index: 10; background-color: rgb(255, 255, 255); border-bottom: 1px solid rgb(211, 222, 228); font-family: "Open Sans", sans-serif; position: sticky; top: 0px; }
+.lsx .de-header-inner { gap: 16px; flex-wrap: wrap; justify-content: space-between; align-items: center; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 14px 32px; display: flex; }
+.lsx .de-brand { color: rgb(10, 37, 69); font-size: 18px; font-weight: 800; text-decoration: none; }
+.lsx .de-nav { gap: 28px; display: flex; }
+.lsx .de-nav-link { color: rgb(11, 46, 76); font-size: 15px; font-weight: 600; text-decoration: none; }
+.lsx .de-nav-link:hover { color: rgb(10, 37, 69); text-decoration: underline; }
+.lsx .de-btn-call { color: rgb(255, 255, 255); background-color: rgb(10, 37, 69); border-radius: 999px; padding: 12px 20px; font-weight: 700; text-decoration: none; transition: background-color 0.2s, color 0.2s, transform 0.2s; display: inline-block; }
+.lsx .de-btn-call:hover { color: rgb(10, 37, 69); background-color: rgb(245, 181, 2); transform: translateY(-2px); }
+.lsx .de-hero { color: rgb(255, 255, 255); background-color: rgb(10, 37, 69); font-family: "Open Sans", sans-serif; }
+.lsx .de-container { max-width: 1200px; margin-left: auto; margin-right: auto; padding-left: 32px; padding-right: 32px; }
+.lsx .de-container.de-footer-inner { flex-flow: wrap; align-items: flex-end; }
+.lsx .de-hero-inner { gap: 48px; flex-wrap: wrap; align-items: center; padding-top: 96px; padding-bottom: 88px; display: flex; }
+.lsx .de-hero-copy { flex: 999 1 520px; min-width: 0px; }
+.lsx .de-eyebrow { color: rgb(245, 181, 2); letter-spacing: 2px; margin-top: 0px; margin-bottom: 16px; font-size: 13px; font-weight: 700; }
+.lsx .de-h1 { color: rgb(255, 255, 255); margin-top: 0px; margin-bottom: 20px; font-size: 52px; font-weight: 800; line-height: 1.1; }
+.lsx .de-hero-lead { color: rgb(211, 222, 228); max-width: 620px; margin-top: 0px; margin-bottom: 32px; font-size: 18px; line-height: 1.6; }
+.lsx .de-btn-row { gap: 14px; flex-wrap: wrap; display: flex; }
+.lsx .de-btn-gold { color: rgb(10, 37, 69); background-color: rgb(245, 181, 2); border-radius: 999px; padding: 16px 28px; font-weight: 800; text-decoration: none; transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s; display: inline-block; }
+.lsx .de-btn-gold:hover { background-color: rgb(255, 203, 46); transform: translateY(-2px); box-shadow: rgba(0, 0, 0, 0.25) 0px 6px 18px; }
+.lsx .de-btn-outline { color: rgb(255, 255, 255); border: 2px solid rgb(255, 255, 255); border-radius: 999px; padding: 14px 28px; font-weight: 700; text-decoration: none; transition: background-color 0.2s, color 0.2s, transform 0.2s; display: inline-block; }
+.lsx .de-btn-outline:hover { color: rgb(10, 37, 69); background-color: rgb(255, 255, 255); transform: translateY(-2px); }
+.lsx .de-hero-card { gap: 14px; background-color: rgb(11, 46, 76); border: 1px solid rgb(30, 72, 112); border-radius: 16px; flex-direction: column; flex: 1 1 320px; min-width: 0px; padding: 28px; display: flex; }
+.lsx .de-hero-license { color: rgb(245, 181, 2); text-align: center; border-bottom: 1px solid rgb(30, 72, 112); margin: 0px; padding-bottom: 14px; font-size: 20px; font-weight: 800; }
+.lsx .de-check-item { color: rgb(255, 255, 255); text-align: center; align-self: center; margin: 0px; font-size: 16px; }
+.lsx .de-section { color: rgb(26, 26, 26); background-color: rgb(255, 255, 255); padding-top: 88px; padding-bottom: 88px; font-family: "Open Sans", sans-serif; }
+.lsx .de-h2 { color: rgb(10, 37, 69); margin-top: 0px; margin-bottom: 12px; font-size: 36px; font-weight: 800; line-height: 1.2; }
+.lsx .de-center { text-align: center; }
+.lsx .de-intro { color: rgb(51, 51, 51); text-align: center; max-width: 760px; margin: 0px auto 48px; font-size: 17px; line-height: 1.6; }
+.lsx .de-card-row { gap: 24px; flex-wrap: wrap; display: flex; }
+.lsx .de-card { background-color: rgb(255, 255, 255); border: 1px solid rgb(211, 222, 228); border-radius: 16px; flex: 1 1 300px; min-width: 0px; padding: 32px; }
+.lsx .de-h3 { color: rgb(10, 37, 69); margin-top: 0px; margin-bottom: 10px; font-size: 21px; font-weight: 700; line-height: 1.3; }
+.lsx .de-body { color: rgb(51, 51, 51); margin-top: 0px; margin-bottom: 16px; font-size: 16px; line-height: 1.6; }
+.lsx .de-list { color: rgb(51, 51, 51); margin: 0px; padding-left: 20px; line-height: 1.9; }
+.lsx .de-section-navy { color: rgb(255, 255, 255); background-color: rgb(10, 37, 69); padding-top: 88px; padding-bottom: 88px; font-family: "Open Sans", sans-serif; }
+.lsx .de-split { gap: 48px; flex-wrap: wrap; display: flex; }
+.lsx .de-split-col { flex: 1 1 420px; min-width: 0px; }
+.lsx .de-h2-light { color: rgb(255, 255, 255); margin-top: 0px; margin-bottom: 16px; font-size: 36px; font-weight: 800; line-height: 1.2; }
+.lsx .de-body-light { color: rgb(211, 222, 228); margin-top: 0px; margin-bottom: 16px; font-size: 16px; line-height: 1.6; }
+.lsx .de-why-item { color: rgb(255, 255, 255); margin-top: 0px; margin-bottom: 18px; font-size: 17px; font-weight: 700; }
+.lsx .de-gold { color: rgb(245, 181, 2); margin-right: 8px; font-weight: 800; }
+.lsx .de-section-light { background-color: rgb(239, 246, 249); padding-top: 80px; padding-bottom: 80px; font-family: "Open Sans", sans-serif; }
+.lsx .de-chip-row { gap: 14px; flex-wrap: wrap; justify-content: center; display: flex; }
+.lsx .de-chip { color: rgb(10, 37, 69); background-color: rgb(255, 255, 255); border: 1px solid rgb(211, 222, 228); border-radius: 999px; padding: 12px 22px; font-weight: 700; }
+.lsx .de-narrow { max-width: 860px; }
+.lsx .de-mb-32 { margin-bottom: 32px; }
+.lsx .de-contact-phone { color: rgb(10, 37, 69); margin-bottom: 10px; font-size: 24px; font-weight: 800; text-decoration: none; display: block; }
+.lsx .de-contact-email { color: rgb(10, 37, 69); margin-bottom: 16px; font-weight: 600; display: block; }
+.lsx .de-cta-card { background-color: rgb(255, 255, 255); border: 1px solid rgb(211, 222, 228); border-radius: 16px; padding: 40px 32px; }
+.lsx .de-cta-title { font-size: 24px; }
+.lsx .de-small { color: rgb(90, 107, 123); margin: 0px; font-size: 14px; }
+.lsx .de-footer { color: rgb(211, 222, 228); background-color: rgb(10, 37, 69); padding-top: 48px; padding-bottom: 48px; font-family: "Open Sans", sans-serif; font-size: 14px; }
+.lsx .de-footer-inner { gap: 24px; flex-wrap: wrap; justify-content: space-between; display: flex; }
+.lsx .de-footer-name { color: rgb(255, 255, 255); margin-top: 0px; margin-bottom: 6px; font-size: 17px; font-weight: 800; }
+.lsx .de-footer-text { color: rgb(211, 222, 228); margin-top: 0px; margin-bottom: 4px; }
+.lsx .de-footer-link { color: rgb(255, 255, 255); text-decoration: underline; }
+.lsx .de-logo-header { width: 88px; height: auto; display: block; }
+.lsx .de-logo-hero { width: 220px; height: auto; margin-left: auto; margin-right: auto; display: block; }
+.lsx .de-logo-footer { width: 110px; height: auto; margin-bottom: 8px; display: block; }
+.lsx .de-acc { gap: 12px; flex-direction: column; display: flex; }
+.lsx .de-acc-item { background-color: rgb(255, 255, 255); border: 1px solid rgb(211, 222, 228); border-radius: 12px; overflow: hidden; }
+.lsx .de-acc-q { color: rgb(10, 37, 69); cursor: pointer; padding: 20px 24px; font-family: "Open Sans", sans-serif; font-size: 17px; font-weight: 700; line-height: 1.4; transition: background-color 0.2s; }
+.lsx .de-acc-q:hover { background-color: rgb(239, 246, 249); }
+.lsx .de-acc-a { color: rgb(51, 51, 51); margin: 0px; padding: 0px 24px 20px; font-size: 16px; line-height: 1.6; }
+.lsx .bt-form { max-width: 760px; margin: 0 auto 16px; font-family: Arial, Helvetica, sans-serif; color: rgb(51, 51, 51); }
+.lsx .bt-row { margin-bottom: 14px; }
+.lsx .bt-row label { display: block; font-size: 15.4px; line-height: 22px; margin-bottom: 4px; }
+.lsx .bt-req { color: rgb(204, 0, 0); }
+.lsx .bt-row input, .lsx .bt-row textarea { width: 100%; height: 39px; border: 1px solid rgb(204, 204, 204); border-radius: 4px; background: #fff; color: #000; font: 12px Arial, Helvetica, sans-serif; padding: 6px 10px; }
+.lsx .bt-row textarea { height: 123px; resize: vertical; }
+.lsx .bt-submit { background: rgb(0, 0, 0); color: #fff; border: 0; width: 120px; height: 35px; font: 15px Arial, Helvetica, sans-serif; cursor: pointer; }
+.lsx .bt-note { margin: 10px 0 0; font-size: 13px; color: rgb(90, 107, 123); }
+@media screen and (max-width: 767px) {
+.lsx .de-header-inner { padding: 12px 20px; }
+.lsx .de-nav { display: none; }
+.lsx .de-container { padding-left: 20px; padding-right: 20px; }
+.lsx .de-hero-inner { padding-top: 64px; padding-bottom: 64px; }
+.lsx .de-h1 { font-size: 34px; }
+.lsx .de-section { padding-top: 64px; padding-bottom: 64px; }
+.lsx .de-h2 { font-size: 26px; }
+.lsx .de-section-navy { padding-top: 64px; padding-bottom: 64px; }
+.lsx .de-h2-light { font-size: 26px; }
+.lsx .de-section-light { padding-top: 64px; padding-bottom: 64px; }
+}
+</style>
+</head>
+<body>
+<div id="case"><span id="top-case"></span>
+<header class="hero">
+  <div class="wrap">
+    <div class="topbar">
+      <span><b>Elizabeth Pisarek</b> · Portfolio case study</span>
+      <span>Delivered Nov 4 – Nov 18, 2026</span>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow" style="color:#8ea6bf">Delta Electric Services · Red River, New Mexico</p>
+        <h1 style="margin-top:12px">From a rented template to a <em style="white-space:nowrap">98-scoring</em> site the client owns outright.</h1>
+        <p class="lede">I took a licensed electrician off a Housecall Pro / Duda template, rebuilt the site in Webflow around local search, recovered the domain the old provider was holding, moved DNS to an independent registrar and cut it over with zero broken links.</p>
+      </div>
+      <dl class="hero-meta">
+        <div><dt>Client</dt><dd>Delta Electric Services (NM Lic. #425178)</dd></div>
+        <div><dt>My role</dt><dd>Solo: strategy through launch</dd></div>
+        <div><dt>Platform</dt><dd>Webflow + Namecheap DNS</dd></div>
+        <div><dt>Website</dt><dd>www.deltaelectricservices.com</dd></div>
+        <div><dt>See the work</dt><dd><a href="#launch-site">View the site as launched</a></dd></div>
+        <div><dt>Audience</dt><dd>Cabin owners, residents, resorts, property managers</dd></div>
+        <div><dt>Market</dt><dd>Enchanted Circle &amp; Taos County</dd></div>
+        <div><dt>Timeline</dt><dd>2 weeks, Nov 2026</dd></div>
+      </dl>
+    </div>
+    <div class="snapshot">
+      <span class="dot" aria-hidden="true"></span>
+      <p><b style="color:#fff">Archived at launch.</b> Every score, record, line of copy and layout preview on this page was captured from the live site on November 18, 2026 at 9:22 PM CST and is stored inside this page. Later edits by the client won't change this record of the work I delivered. <a href="#launch-site" style="color:var(--gold)">Open the archived launch version</a>. The current site at www.deltaelectricservices.com is managed by the client and may have changed since.</p>
+    </div>
+  </div>
+</header>
+
+<section class="scores" aria-labelledby="res">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Results at launch</p>
+      <h2 id="res">Google PageSpeed Insights, mobile &amp; desktop</h2>
+      <p class="prose">Both reports come from the same run. Mobile is the hard test: Lighthouse simulates a mid-range Android phone on a throttled 4G connection, which is close to what a visitor gets on a mountain road outside Red River.</p>
+    </div>
+    <h3 class="dev">Mobile</h3>
+    <div class="score-row" id="gauges"></div>
+    <div class="vitals">
+      <div><span>First Contentful Paint</span><b>1.5 s</b></div>
+      <div><span>Largest Contentful Paint</span><b>1.5 s</b></div>
+      <div><span>Total Blocking Time</span><b>0 ms</b></div>
+      <div><span>Cumulative Layout Shift</span><b>0.088</b></div>
+      <div><span>Speed Index</span><b>1.5 s</b></div>
+    </div>
+    <p class="fine">Captured Nov 18, 2026, 9:22 PM CST · Emulated Moto G Power · Slow 4G throttling · <a class="proof" href="https://pagespeed.web.dev/analysis/https-www-deltaelectricservices-com/sp3p3g5dxn?form_factor=mobile">View original mobile report ↗</a></p>
+    <h3 class="dev" style="margin-top:40px">Desktop</h3>
+    <div class="score-row" id="gauges-d"></div>
+    <div class="vitals">
+      <div><span>First Contentful Paint</span><b>0.4 s</b></div>
+      <div><span>Largest Contentful Paint</span><b>0.4 s</b></div>
+      <div><span>Total Blocking Time</span><b>0 ms</b></div>
+      <div><span>Cumulative Layout Shift</span><b>0.001</b></div>
+      <div><span>Speed Index</span><b>0.5 s</b></div>
+    </div>
+    <p class="fine">Captured Nov 18, 2026, 9:22 PM CST · Desktop · <a class="proof" href="https://pagespeed.web.dev/analysis/https-www-deltaelectricservices-com/sp3p3g5dxn?form_factor=desktop">View original desktop report ↗</a></p>
+    <p class="fine">Both reports come from Google PageSpeed Insights (Lighthouse 13.6.0), report ID sp3p3g5dxn. Results are shown as captured at launch; a new test of the live site measures the client's current version and normal run-to-run variation.</p>
+  </div>
+</section>
+
+<section aria-labelledby="ch">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">The challenge</p>
+      <h2 id="ch">The business was locked into a site it didn't control</h2>
+    </div>
+    <div class="two">
+      <div class="card">
+        <h3>What I inherited</h3>
+        <ul class="ticks x">
+          <li>A five-page Duda template bundled with Housecall Pro, with booking, chat and reviews all running as third-party widgets.</li>
+          <li>The domain sat under the old provider's control, with nameservers pointed at an AWS Route 53 zone nobody at Delta could log into.</li>
+          <li>A headline ("Delivering Excellence, One Service at a Time") with no service or town in it, and no structured data at all.</li>
+          <li>Template leftovers: four Tennessee towns in the service-area list, a "We delivers" typo, weekend hours listed two different ways, and social icons linked to generic home pages.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>What the owner needed</h3>
+        <ul class="ticks">
+          <li>To show up when someone in Red River, Angel Fire or Eagle Nest searches for an electrician or a standby generator.</li>
+          <li>To own his domain and site independently of any one software vendor.</li>
+          <li>Leads routed into Buildertrend, the project software he already runs the business on.</li>
+          <li>A fast, simple page that works on a phone with one bar of signal, with calling one tap away.</li>
+          <li>A budget-conscious build: packages ran $850–$2,500, with Webflow hosting costs shown openly.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="pr">
+  <div class="wrap two" style="align-items:start">
+    <div>
+      <div class="sec-head">
+        <p class="eyebrow">Process</p>
+        <h2 id="pr">Two weeks, discovery call to DNS cutover</h2>
+        <p class="prose">I ran it as a small phased project: scope and price it, audit, design, build, migrate, tune, hand off.</p>
+      </div>
+      <div class="card">
+        <h3>Deliverables handed to the client</h3>
+        <ul class="ticks">
+          <li>Build checklist and phased plan from the discovery call</li>
+          <li>Two pricing sheets (PDF) with a transparent Webflow cost breakdown</li>
+          <li>12-page brand &amp; content reference extracted from the old site</li>
+          <li>Launched Webflow site with SEO settings and schema</li>
+          <li>Domain &amp; Account Summary (PDF): registrar login, 2FA backup codes, DNS records and authenticator setup</li>
+          <li>301 redirect map and DNS cutover runbook</li>
+        </ul>
+      </div>
+    </div>
+    <ol class="timeline">
+      <li><p class="when">Discovery</p><h3>Scoping &amp; pricing</h3><p>Turned a recorded call with the owner into a build checklist, three phases (domain recovery, content, build/launch) and pricing tiers.</p></li>
+      <li><p class="when">Audit</p><h3>Content &amp; brand extraction</h3><p>Pulled copy, colors (navy #0A2545, gold #F5B502, light #EFF6F9) and Open Sans type specs from all five pages into a reference PDF, and logged every defect to fix.</p></li>
+      <li><p class="when">Platform</p><h3>Wix tried, Webflow chosen</h3><p>A Wix import came back as an editorless headless site. I compared Webflow, Framer, WordPress.com and Sanity on security certifications and editing, and picked Webflow.</p></li>
+      <li><p class="when">UX / UI</p><h3>One mobile-first landing page</h3><p>Sticky header with click-to-call, hero, three service cards, Why Us, service areas, FAQ accordion, contact and footer. Placed the client's navy and white logos by context.</p></li>
+      <li><p class="when">SEO</p><h3>Copy rewritten around local search</h3><p>New H1, keyword-led service headings, town names in body copy, seven local FAQs. Removed an unconfirmed "free estimate" claim before it could go live.</p></li>
+      <li><p class="when">Build</p><h3>Native Webflow elements</h3><p>Built section by section as editable Webflow elements with scoped <code>de-</code> classes, then added meta, Open Graph and JSON-LD.</p></li>
+      <li><p class="when">Domain</p><h3>Recovery &amp; transfer</h3><p>Moved the domain from the old provider to Namecheap, with 2FA, domain lock and WHOIS privacy, and the owner set as the domain contact.</p></li>
+      <li><p class="when">Network</p><h3>DNS cutover</h3><p>Checked MX records first, switched nameservers off Route 53, added the Webflow records, verified both hostnames and set www as primary.</p></li>
+      <li><p class="when">QA</p><h3>Tune, test, launch</h3><p>Embedded the Buildertrend form, fixed layout shift, verified every legacy URL redirects, and ran Lighthouse until mobile hit 98.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section aria-labelledby="ux">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">UX &amp; UI</p>
+      <h2 id="ux">Designed for someone standing in a cold cabin with the power out</h2>
+      <p class="prose">A lot of Red River's homes are second homes. The owner may be in Texas when the power fails, and a property manager makes the call. So the phone number sits in the header, the hero's first button calls, and every section answers one question that person has. The previews below are recreated from the launched layout and its real copy, and you can <a href="#launch-site">browse the full page as launched</a>.</p>
+    </div>
+    <div class="mock-stage">
+      <figure style="margin:0">
+        <div class="browser" role="img" aria-label="Desktop preview of the Delta Electric landing page hero and service cards">
+          <div class="bar"><i></i><i></i><i></i><span class="url">https://www.deltaelectricservices.com</span></div>
+          <div class="site">
+            <div class="s-head"><span class="s-brand"><span class="tri"></span>Delta Electric Services</span><span class="s-nav"><span>Services</span><span>Why Us</span><span>Service Areas</span><span>FAQ</span><span>Contact</span></span><span class="s-call">(575) 754-8967</span></div>
+            <div class="s-hero">
+              <div>
+                <p class="s-eye">LOCALLY OWNED · NM LICENSE #425178</p>
+                <p class="s-h1">Licensed Electrician in Red River, NM &amp; the Enchanted Circle</p>
+                <p class="s-p">Electrical repairs, panel upgrades, cabin rewiring, lighting and standby generator installation for homes, cabins and businesses in Red River, Angel Fire, Eagle Nest and Taos County.</p>
+                <div class="s-btns"><span class="s-b1">Call (575) 754-8967</span><span class="s-b2">Request Service</span></div>
+              </div>
+              <div class="s-card">
+                <img src="data:image/webp;base64,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" alt="Delta Electric Services logo">
+                <span class="lic">NM Lic. #425178</span>
+                <span>✓ Locally owned &amp; operated</span>
+                <span>✓ Residential &amp; commercial</span>
+                <span>✓ Generac, Kohler &amp; Cummins generators</span>
+                <span>✓ Mon – Fri, 7:00 am – 5:00 pm</span>
+              </div>
+            </div>
+            <div class="s-svc"><div>Residential Electrician for Homes &amp; Cabins</div><div>Commercial Electrician for Resorts, Restaurants &amp; Retail</div><div>Standby Generator Installation &amp; Maintenance</div></div>
+          </div>
+        </div>
+        <figcaption class="cap">Desktop: the license number and generator brands sit beside the headline as trust signals.</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <div class="phone" role="img" aria-label="Mobile preview of the Delta Electric landing page">
+          <div class="site">
+            <div class="s-head"><span class="s-brand"><span class="tri"></span>Delta</span><span class="s-call">Call</span></div>
+            <div class="s-hero">
+              <div>
+                <p class="s-eye">LOCALLY OWNED · NM LICENSE #425178</p>
+                <p class="s-h1">Licensed Electrician in Red River, NM &amp; the Enchanted Circle</p>
+                <p class="s-p">Panel upgrades, cabin rewiring, lighting and standby generators across Red River, Angel Fire, Eagle Nest and Taos County.</p>
+                <div class="s-btns"><span class="s-b1">Call (575) 754-8967</span><span class="s-b2">Request Service</span></div>
+              </div>
+            </div>
+            <div class="s-svc"><div>Residential Electrician for Homes &amp; Cabins</div><div>Commercial Electrician for Resorts, Restaurants &amp; Retail</div><div>Standby Generator Installation &amp; Maintenance</div></div>
+          </div>
+        </div>
+        <figcaption class="cap" style="text-align:center">Mobile: one column, call button in the header and first in the hero.</figcaption>
+      </figure>
+    </div>
+    <div class="three" style="margin-top:32px">
+      <div class="card"><h3>Information architecture</h3><p>Five thin pages became one long page with anchor navigation (<code>#services</code>, <code>#why</code>, <code>#areas</code>, <code>#faq</code>, <code>#contact</code>). Visitors scroll on a phone instead of waiting for new pages to load on a weak signal.</p></div>
+      <div class="card"><h3>Visual system</h3><p>I kept the existing brand so returning customers recognize it: navy and gold, Open Sans 400–800, gold-topped service cards, and hover states on every button and nav link.</p></div>
+      <div class="card"><h3>Accessible by default</h3><p>The FAQ uses native <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>, so it works with a keyboard and screen reader and stays crawlable. Every image has alt text, the logo link has an <code>aria-label</code>, the form iframe has a title, and tap targets are at least 44px.</p></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="seo">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">SEO</p>
+      <h2 id="seo">Built to rank for "electrician Red River NM"</h2>
+      <p class="prose">I rewrote the copy the way a local SEO would. Each heading names a service and a place, and the FAQ answers the questions people actually type, like whether they install generators for a cabin nobody lives in full time.</p>
+    </div>
+    <div class="two">
+      <div style="display:grid;gap:20px;align-content:start">
+        <div class="tbl"><table>
+          <thead><tr><th>Element</th><th>Before</th><th>After</th></tr></thead>
+          <tbody>
+            <tr><td>Title tag</td><td>Electrical Experts| Delta Electric Services | Red River, NM</td><td>Electrician in Red River, NM | Delta Electric Services</td></tr>
+            <tr><td>H1</td><td>Delivering Excellence, One Service at a Time</td><td>Licensed Electrician in Red River, NM &amp; the Enchanted Circle</td></tr>
+            <tr><td>Meta description</td><td>Generic repairs and installs, no towns</td><td>Four towns, three core services, and the phone number in 155 characters</td></tr>
+            <tr><td>Structured data</td><td><span class="pill old">None</span></td><td><span class="pill">Electrician + FAQPage</span></td></tr>
+            <tr><td>Service area</td><td>Included 4 Tennessee towns</td><td>Red River, Angel Fire, Eagle Nest, Taos County</td></tr>
+            <tr><td>Lighthouse SEO</td><td>Not recorded</td><td><span class="pill">100 / 100</span></td></tr>
+          </tbody>
+        </table></div>
+        <div class="card">
+          <h3>Keyword map</h3>
+          <p><b>Primary:</b> electrician Red River NM</p>
+          <p><b>Secondary:</b> generator installation Taos County · electrician Angel Fire NM · Eagle Nest electrician · cabin rewiring · panel upgrade · Kohler / Generac / Cummins generators</p>
+        </div>
+      </div>
+      <div style="display:grid;gap:20px;align-content:start">
+        <div class="outline" aria-label="Heading outline of the launched page">
+          <div><span class="t">H1</span> Licensed Electrician in Red River, NM &amp; the Enchanted Circle</div>
+          <div class="i1"><span class="t">H2</span> Residential, Commercial &amp; Generator Services in Northern New Mexico</div>
+          <div class="i2"><span class="t">H3</span> Residential Electrician for Homes &amp; Cabins</div>
+          <div class="i2"><span class="t">H3</span> Commercial Electrician for Resorts, Restaurants &amp; Retail</div>
+          <div class="i2"><span class="t">H3</span> Standby Generator Installation &amp; Maintenance</div>
+          <div class="i1"><span class="t">H2</span> Why Choose Delta Electric Services?</div>
+          <div class="i1"><span class="t">H2</span> Electrician Serving Red River, Angel Fire, Eagle Nest &amp; Taos County</div>
+          <div class="i1"><span class="t">H2</span> Red River Electrician FAQs <span style="color:#8ea6bf">(7 questions)</span></div>
+          <div class="i1"><span class="t">H2</span> Contact Your Local Red River Electrician</div>
+          <div class="i2"><span class="t">H3</span> Request Service Online</div>
+        </div>
+<pre aria-label="Excerpt of the JSON-LD structured data"><span class="k">"@type"</span>: "Electrician",
+<span class="k">"name"</span>: "Delta Electric Services",
+<span class="k">"telephone"</span>: "+1-575-754-8967",
+<span class="k">"hasCredential"</span>: "NM Electrical License #425178",
+<span class="k">"openingHours"</span>: "Mo-Fr 07:00-17:00",
+<span class="k">"areaServed"</span>: ["Red River, NM", "Angel Fire, NM",
+               "Eagle Nest, NM", "Taos County, NM"]
+<span style="color:#7f93a8">// + FAQPage graph with all 7 Q&amp;As</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="mk">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Marketing</p>
+      <h2 id="mk">Copy that speaks to who actually hires a mountain electrician</h2>
+    </div>
+    <div class="three">
+      <div class="card"><h3>Audience segments</h3><p>Full-time residents, second-home and cabin owners, property managers, contractors, and resort, restaurant and retail owners. Each one is named in the copy, and the commercial card names the businesses that keep a ski town running.</p></div>
+      <div class="card"><h3>Pain-point messaging</h3><p>"Winter outages mean frozen pipes" sells a standby generator better than a feature list. Headlines speak to high-altitude winters and older cabin wiring, and the brands named (Kohler, Generac, Cummins) are the ones buyers search for.</p></div>
+      <div class="card"><h3>Conversion path</h3><p>Three ways to reach the business: tap to call, tap to email, or the Buildertrend form, which drops the lead straight into the owner's project pipeline. Every CTA leads to one of the three, and no claim goes live until the owner confirms it.</p></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="dns">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Domain &amp; network engineering</p>
+      <h2 id="dns">Getting the domain back, then a clean DNS cutover</h2>
+      <p class="prose">The old provider had taken ownership of the domain, and its DNS lived in an AWS Route 53 zone under their account. Anything added at the registrar would have been ignored. I moved the domain to Namecheap, planned the cutover so email couldn't break, and switched with the new site already waiting.</p>
+    </div>
+    <div class="two">
+      <div class="card">
+        <h3>Cutover runbook</h3>
+        <ol class="timeline" style="margin-top:16px">
+          <li><h3>Registrar choice</h3><p>Compared Namecheap, Porkbun and Cloudflare. Cloudflare needs its own nameservers before it accepts a transfer, which conflicted with the old provider's process, so I chose Namecheap.</p></li>
+          <li><h3>Transfer &amp; harden</h3><p>Transferred the domain, then turned on registrar 2FA, domain lock, auto-renew and WHOIS privacy. Checked status through WHOIS/RDAP.</p></li>
+          <li><h3>Protect email first</h3><p>Ran MX and TXT lookups before touching nameservers. The business email is a standalone Gmail account, so no mail records had to be carried over.</p></li>
+          <li><h3>Switch nameservers</h3><p>Moved from the four <code>awsdns</code> servers to Namecheap BasicDNS and deleted the parking records Namecheap adds by default.</p></li>
+          <li><h3>Verify &amp; publish</h3><p>Watched propagation on DNSChecker, verified both hostnames in Webflow, set <code>www</code> as primary, published, and let Webflow issue SSL.</p></li>
+        </ol>
+      </div>
+      <div style="display:grid;gap:20px;align-content:start">
+        <div class="tbl"><table>
+          <thead><tr><th>Type</th><th>Host</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>NS</td><td>@</td><td>Namecheap BasicDNS <span class="pill old" style="margin-top:4px">was AWS Route 53</span></td></tr>
+            <tr><td>A</td><td><code>@</code></td><td><code>198.202.211.1</code></td></tr>
+            <tr><td>CNAME</td><td><code>www</code></td><td><code>cdn.webflow.com</code></td></tr>
+            <tr><td>TXT</td><td><code>_webflow</code></td><td><code>one-time-verification=864d…f636</code></td></tr>
+          </tbody>
+        </table></div>
+        <div class="tbl"><table>
+          <thead><tr><th>Legacy URL</th><th>301 →</th><th>Checked at launch</th></tr></thead>
+          <tbody>
+            <tr><td><code>/about-us</code></td><td><code>/</code></td><td><span class="pill">200 after redirect</span></td></tr>
+            <tr><td><code>/residential</code></td><td><code>/</code></td><td><span class="pill">200 after redirect</span></td></tr>
+            <tr><td><code>/commercial</code></td><td><code>/</code></td><td><span class="pill">200 after redirect</span></td></tr>
+            <tr><td><code>/standby-generators</code></td><td><code>/</code></td><td><span class="pill">200 after redirect</span></td></tr>
+            <tr><td><code>/home</code></td><td><code>/</code></td><td><span class="pill">200 after redirect</span></td></tr>
+            <tr><td>apex, http://</td><td><code>https://www.</code></td><td><span class="pill">Canonical host</span></td></tr>
+          </tbody>
+        </table></div>
+        <p class="fine" style="margin-top:0">Verification token shortened for this page. All five legacy paths were requested on Nov 18, 2026 and returned the new homepage, so old Google results and bookmarks still land on the site.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="qa">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Performance &amp; QA</p>
+      <h2 id="qa">Chasing layout shift down to a 98</h2>
+      <p class="prose">The first post-launch Lighthouse run flagged a high Cumulative Layout Shift. I traced it to two causes and fixed both at the source rather than hiding them.</p>
+    </div>
+    <div class="three">
+      <div class="card"><h3>Reserved logo space</h3><p>The header logo had no fixed dimensions, so everything below it moved about 33px when it loaded. I gave it an explicit 88 × 77 box set to Contain, matching the triangle mark's shape, at every breakpoint.</p></div>
+      <div class="card"><h3>Font swap removed</h3><p>I replaced Webflow's Google Fonts loader with preconnects and a single Open Sans request using <code>display=optional</code>, and dropped an unused weight. Text no longer re-wraps once the web font arrives.</p></div>
+      <div class="card"><h3>Lighter form embed</h3><p>I rewrote Buildertrend's snippet: the script is deferred and placed after the iframe, the iframe lazy-loads and starts with a reserved height, and its width is capped at 760px. Then I sent a real test submission through to Buildertrend.</p></div>
+    </div>
+    <div class="card" style="margin-top:20px">
+      <h3>QA checklist run before handoff</h3>
+      <ul class="ticks" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));column-gap:28px">
+        <li>Lighthouse mobile run three times after publishing</li>
+        <li>Desktop, tablet, mobile landscape and portrait breakpoints</li>
+        <li>One H1, ordered H2/H3 outline, crawlable FAQ</li>
+        <li><code>tel:</code> and <code>mailto:</code> links on every contact point</li>
+        <li>Every legacy URL redirects; www is canonical over HTTPS</li>
+        <li>Template leftovers, typos and conflicting hours fixed</li>
+        <li>Buildertrend form test lead received</li>
+        <li>Structured data checked against the visible copy</li>
+      </ul>
+      <p class="fine">Next round: add a <code>&lt;main&gt;</code> landmark (the one open Accessibility item), set explicit sizes on the remaining logo images, and trim preconnects to the four origins that matter.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="kit" style="background:var(--white)">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Toolkit</p>
+      <h2 id="kit">Tools, languages and platforms I used on this project</h2>
+      <p class="prose">Dark chips mark the tools that carried the most weight.</p>
+    </div>
+    <div class="kit">
+      <div class="card"><h3>UX Design <span>research → flow</span></h3><ul class="chips"><li class="k">Content audit</li><li>Information architecture</li><li class="k">Mobile-first design</li><li>Audience &amp; user journeys</li><li>Single-page anchor navigation</li><li>Click-to-call CTA strategy</li><li>Sticky header</li></ul></div>
+      <div class="card"><h3>UI &amp; Visual Design <span>look &amp; feel</span></h3><ul class="chips"><li class="k">Claude Design canvas</li><li>Brand palette extraction</li><li>Typography (Open Sans)</li><li>Logo placement &amp; cropping</li><li>Responsive breakpoints</li><li>Hover &amp; focus states</li><li>Component styling</li></ul></div>
+      <div class="card"><h3>Front-End Development <span>code</span></h3><ul class="chips"><li class="k">HTML5</li><li class="k">CSS3 / Flexbox</li><li>JavaScript (embed)</li><li class="k">JSON-LD</li><li>Semantic HTML (details/summary)</li><li>Custom code embeds</li><li>Scoped class naming</li></ul></div>
+      <div class="card"><h3>Platforms &amp; CMS <span>build &amp; host</span></h3><ul class="chips"><li class="k">Webflow (Designer, Hosting, Site Settings)</li><li>Wix (evaluated, Headless)</li><li>Duda (legacy site)</li><li>Housecall Pro (legacy)</li><li class="k">Buildertrend</li><li>Google Fonts</li></ul></div>
+      <div class="card"><h3>SEO <span>search</span></h3><ul class="chips"><li class="k">Local keyword research</li><li class="k">On-page SEO</li><li>Technical SEO</li><li class="k">Schema.org (Electrician, FAQPage)</li><li>Meta &amp; Open Graph</li><li>Canonical host</li><li>301 redirect mapping</li><li>Heading hierarchy</li></ul></div>
+      <div class="card"><h3>Marketing <span>growth</span></h3><ul class="chips"><li class="k">Conversion copywriting</li><li>Audience segmentation</li><li>Pain-point messaging</li><li>Lead capture (Buildertrend)</li><li>Trust signals (license, brands)</li><li>Brand consistency</li><li>Claim verification</li></ul></div>
+      <div class="card"><h3>Network &amp; DNS Engineering <span>infrastructure</span></h3><ul class="chips"><li class="k">Domain transfer</li><li class="k">Namecheap DNS</li><li>AWS Route 53 (legacy)</li><li>Nameservers</li><li>A / CNAME / TXT / MX records</li><li>MXToolbox</li><li>DNSChecker</li><li>WHOIS / RDAP</li><li>SSL / TLS &amp; HTTPS</li></ul></div>
+      <div class="card"><h3>Quality Assurance <span>test &amp; tune</span></h3><ul class="chips"><li class="k">Google PageSpeed Insights</li><li class="k">Lighthouse 13.6</li><li>Core Web Vitals</li><li>Chrome DevTools</li><li>Cross-breakpoint testing</li><li>Redirect verification</li><li>Form submission testing</li><li>Proofreading</li></ul></div>
+      <div class="card"><h3>Accessibility <span>WCAG-minded</span></h3><ul class="chips"><li class="k">Alt text</li><li>ARIA labels</li><li>Keyboard-friendly accordion</li><li>Iframe titles</li><li>44px tap targets</li><li>Color contrast</li></ul></div>
+      <div class="card"><h3>Security &amp; Account Ops <span>ownership</span></h3><ul class="chips"><li class="k">Two-factor authentication</li><li>Domain lock</li><li>WHOIS privacy</li><li>Account ownership planning</li><li>Secure credential handoff</li><li>Platform security comparison</li></ul></div>
+      <div class="card"><h3>AI-Assisted Workflow <span>speed</span></h3><ul class="chips"><li class="k">Claude (Anthropic)</li><li class="k">Webflow MCP connector</li><li>Wix MCP connector</li><li>AI browser automation for audits</li><li>AI-drafted copy, human-edited</li><li>AI-generated PDF deliverables</li></ul></div>
+      <div class="card"><h3>Project Management <span>delivery</span></h3><ul class="chips"><li class="k">Scoping from discovery call</li><li>Phased build checklist</li><li class="k">Pricing packages</li><li>Client communication</li><li>Handoff documentation</li><li>Agile, Scrum-style iteration</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <b>Elizabeth Pisarek</b>
+      <span>Full-stack web developer · UX/UI · SEO · Project management</span>
+    </div>
+    <div style="text-align:right">
+      <div>lizpisarek@gmail.com</div>
+      <div><a href="https://lizpisarek.wixsite.com/portfolio">lizpisarek.wixsite.com/portfolio</a></div>
+    </div>
+  </div>
+</footer>
+</div>
+<div id="launch-view" hidden>
+<div class="arch-bar"><a href="#top-case" class="arch-back">← Back to the case study</a><span>Archived copy of www.deltaelectricservices.com as launched · Nov 18, 2026 · Built by Elizabeth Pisarek</span></div>
+<div class="lsx">
+<header class="de-header"><div class="de-header-inner"><a aria-label="Delta Electric Services home" href="#launch-site" data-jump="ls-top" class="de-brand"><img src="data:image/webp;base64,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" alt="Delta Electric Services logo" class="de-logo-header" width="88" height="77"></a><nav class="de-nav"><a href="#launch-site" data-jump="ls-services" class="de-nav-link">Services</a><a href="#launch-site" data-jump="ls-why" class="de-nav-link">Why Us</a><a href="#launch-site" data-jump="ls-areas" class="de-nav-link">Service Areas</a><a href="#launch-site" data-jump="ls-faq" class="de-nav-link">FAQ</a><a href="#launch-site" data-jump="ls-contact" class="de-nav-link">Contact</a></nav><span class="de-btn-call">(575) 754-8967</span></div></header>
+<section id="ls-top" class="de-hero"><div class="de-container de-hero-inner"><div class="de-hero-copy"><p class="de-eyebrow">LOCALLY OWNED · NM LICENSE #425178</p><h2 class="de-h1">Licensed Electrician in Red River, NM &amp; the Enchanted Circle</h2><p class="de-hero-lead">Delta Electric Services handles electrical repairs, panel upgrades, cabin rewiring, lighting and standby generator installation for homes, cabins and businesses in Red River, Angel Fire, Eagle Nest and Taos County. Local, licensed and ready for mountain weather.</p><div class="de-btn-row"><span class="de-btn-gold">Call (575) 754-8967</span><a href="#launch-site" data-jump="ls-contact" class="de-btn-outline">Request Service</a></div></div><div class="de-hero-card"><img src="data:image/webp;base64,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" alt="Delta Electric Services, licensed electrician in Red River, New Mexico" class="de-logo-hero" width="220" height="220"><p class="de-hero-license">NM Lic. #425178</p><p class="de-check-item">✓ Locally owned &amp; operated</p><p class="de-check-item">✓ Residential &amp; commercial</p><p class="de-check-item">✓ Generac, Kohler &amp; Cummins generators</p><p class="de-check-item">✓ Mon – Fri, 7:00 am – 5:00 pm</p></div></div></section>
+<section id="ls-services" class="de-section"><div class="de-container"><h2 class="de-h2 de-center">Residential, Commercial &amp; Generator Services in Northern New Mexico</h2><p class="de-intro">From mountain cabins and family homes to resorts, restaurants and storefronts, we design, install and repair electrical systems built for high-altitude winters, with strict adherence to New Mexico electrical code and an eye on energy efficiency.</p><div class="de-card-row"><div class="de-card"><h3 class="de-h3">Residential Electrician for Homes &amp; Cabins</h3><p class="de-body">Mountain weather is hard on older wiring and panels. We bring Red River homes and cabins up to modern, safe standards.</p><ul role="list" class="de-list"><li>Electrical panel upgrades</li><li>Cabin &amp; home rewiring</li><li>Custom interior &amp; exterior lighting</li><li>Troubleshooting &amp; repairs</li></ul></div><div class="de-card"><h3 class="de-h3">Commercial Electrician for Resorts, Restaurants &amp; Retail</h3><p class="de-body">Reliable design, installation and maintenance for local businesses that can’t afford downtime.</p><ul role="list" class="de-list"><li>LED lighting &amp; retrofitting</li><li>High-voltage equipment wiring</li><li>Commercial backup generators (1 or 3 phase)</li><li>Preventative maintenance</li></ul></div><div class="de-card"><h3 class="de-h3">Standby Generator Installation &amp; Maintenance</h3><p class="de-body">Winter outages mean frozen pipes. We size, install and maintain Kohler, Generac and Cummins backup generators so power returns automatically.</p><ul role="list" class="de-list"><li>Whole-home generator installation</li><li>Load sizing, permitting &amp; fuel lines</li><li>Automatic transfer switch setup</li><li>Maintenance &amp; repair plans</li></ul></div></div></div></section>
+<section id="ls-why" class="de-section-navy"><div class="de-container de-split"><div class="de-split-col"><h2 class="de-h2-light">Why Choose Delta Electric Services?</h2><p class="de-body-light">We believe every customer deserves safe, reliable, high-quality electrical work. We proudly serve homeowners, businesses, property managers and contractors throughout Northern New Mexico.</p><p class="de-body-light">From minor repairs to complete installations, we bring professionalism, attention to detail and a focus on customer satisfaction to every job.</p></div><div class="de-split-col"><p class="de-why-item"><span class="de-gold">✓</span> Locally Owned &amp; Operated</p><p class="de-why-item"><span class="de-gold">✓</span> Honest, Reliable Service</p><p class="de-why-item"><span class="de-gold">✓</span> Residential &amp; Commercial Expertise</p><p class="de-why-item"><span class="de-gold">✓</span> Quality Workmanship</p><p class="de-why-item"><span class="de-gold">✓</span> Prompt Response Times</p><p class="de-why-item"><span class="de-gold">✓</span> Customer-Focused Solutions</p></div></div></section>
+<section id="ls-areas" class="de-section-light"><div class="de-container de-center"><h2 class="de-h2">Electrician Serving Red River, Angel Fire, Eagle Nest &amp; Taos County</h2><p class="de-intro">Based in Red River, we serve full-time residents, second-home and cabin owners, property managers, contractors and businesses across the Enchanted Circle and surrounding Northern New Mexico communities.</p><div class="de-chip-row"><span class="de-chip">Red River, NM</span><span class="de-chip">Angel Fire, NM</span><span class="de-chip">Eagle Nest, NM</span><span class="de-chip">Taos County, NM</span><span class="de-chip">Surrounding Communities</span></div></div></section>
+<section id="ls-faq" class="de-section"><div class="de-container de-narrow"><h2 class="de-h2 de-center de-mb-32">Red River Electrician FAQs</h2><div class="de-acc"><details class="de-acc-item"><summary class="de-acc-q">Are you a licensed electrician in New Mexico?</summary><p class="de-acc-a">Yes. Delta Electric Services is a locally owned electrical contractor based in Red River, NM, license #425178.</p></details><details class="de-acc-item"><summary class="de-acc-q">What areas do you serve?</summary><p class="de-acc-a">We serve Red River, Angel Fire, Eagle Nest, Taos County and surrounding Northern New Mexico communities.</p></details><details class="de-acc-item"><summary class="de-acc-q">Do you install standby generators for mountain homes and cabins?</summary><p class="de-acc-a">Yes. We handle the full job: load sizing, permitting, fuel line integration and automatic transfer switch setup, plus ongoing maintenance and repair plans. We work with Kohler, Generac and Cummins generators.</p></details><details class="de-acc-item"><summary class="de-acc-q">Can you rewire an older cabin?</summary><p class="de-acc-a">Yes. We replace historical, worn or pest-damaged wiring in wood-constructed cabins and homes with durable new copper lines.</p></details><details class="de-acc-item"><summary class="de-acc-q">How do I know if I need an electrical panel upgrade?</summary><p class="de-acc-a">If your breakers trip often, your panel is outdated, or your property needs more electrical capacity, a panel upgrade may be recommended.</p></details><details class="de-acc-item"><summary class="de-acc-q">Do you work with property managers and contractors?</summary><p class="de-acc-a">Yes. We serve homeowners, businesses, property managers and contractors on projects of every size, from small repairs to complete installations.</p></details><details class="de-acc-item"><summary class="de-acc-q">How can I request service?</summary><p class="de-acc-a">Call or text (575) 754-8967, email deltaelectricnm@gmail.com, or use the Request Service button on this page.</p></details></div></div></section>
+<section id="ls-contact" class="de-section-light"><div class="de-container de-split"><div class="de-split-col"><h2 class="de-h2">Contact Your Local Red River Electrician</h2><p class="de-body">Ready to power your mountain property? Call, text or send a quick message about your home, cabin or business project and we’ll respond fast.</p><span class="de-contact-phone">(575) 754-8967</span><span class="de-contact-email">deltaelectricnm@gmail.com</span><p class="de-body">PO Box 345, Red River, NM 87558</p><p class="de-body">Mon – Fri: 7:00 am – 5:00 pm<br>Sat – Sun: By appointment</p></div><div class="de-split-col de-cta-card"><h3 class="de-h3 de-cta-title">Request Service Online</h3><p class="de-body">Tell us about your home, cabin or business project and we’ll get back to you fast.</p>
+<form class="bt-form" id="bt-archive-form" aria-label="Archived Buildertrend contact form">
+<div class="bt-row"><label for="bt-first"><span class="bt-req">*</span> First Name</label><input id="bt-first" type="text"></div>
+<div class="bt-row"><label for="bt-last"><span class="bt-req">*</span> Last Name</label><input id="bt-last" type="text"></div>
+<div class="bt-row"><label for="bt-email"><span class="bt-req">*</span> Email</label><input id="bt-email" type="email"></div>
+<div class="bt-row"><label for="bt-phone"><span class="bt-req">*</span> Phone</label><input id="bt-phone" type="text"></div>
+<div class="bt-row"><label for="bt-address">Address</label><input id="bt-address" type="text"></div>
+<div class="bt-row"><label for="bt-message">Message</label><textarea id="bt-message"></textarea></div>
+<input type="submit" value="Submit" class="bt-submit"><p class="bt-note" id="bt-note" hidden>This is an archived copy, so the form doesn't send. On the live site it delivers leads to the owner's Buildertrend account.</p>
+</form>
+<p class="de-small">Prefer to talk? Call or text (575) 754-8967.</p></div></div></section>
+<footer class="de-footer"><div class="de-container de-footer-inner"><div><img src="data:image/webp;base64,UklGRpYYAABXRUJQVlA4WAoAAAAwAAAAvQAAvQAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIBRQAAAHwhu3/Oqfx/z2e7/GJu4cgIZAALUSgOMG1SaAUd6mXuhtSxYtUWNrdum6pQ7eK1HBosBYJlJKUBAjxzLweN97vmcm2M3PrIxExAfh/O5tNQZ0M6SvBXOyOryODOO2m2stztOCtzQ/kd+lBmzzURDbeIUGapNeQ5MVECc5CP1A69ZozKJOJl2l4sSQoS9pCjx/HBWEyu85TzVQJvuIOk+TlJpLcHxF0yYuKpLrzLUVSLZcgS/rXkeRPyV3OkGTNVUFW7DuKZPV8s+PJRpLuV6OCKim6RFJtjwayj5Fk1QgJphzfkGT9cAC4x02Sm+1BlNzuIqmeN+situuarpPgqVM1SR7LACCQnpdJ8mK7oMmxUZFsvNti6p40NgzOF9wk1XpbkCRDzpDkT+2k4w957z0Wgl4nSPLUAAmObO+4SarZmjamKf/Tb1JgXaZIul+xBUUy3EVSbTVDK27O/2RrKhD3B0k29ZNgKOUYSZ67AtCKPMiEOpI8mBAEmZcqkq4nLAgZUNSc/+nW3AKB8z2dWmQKfq46TpK/XAH70+uKdX1+7wYMLSfJo7lBj2Otm6R6yIysfRsM+rqWaQh7Sde83B7kSK9KkjwSD3Q8uK7EaIUGdKkhyfI8CW603Yqku4cAmbvXFhut1AC5R5FU24Ib082KpPufAiBr74sGfQxg+54k1RwtmMk5SJLHe0O3f31xc96n23q7DXBtFUnuyQpirIuaSbqetera733+RveX5/aNcBlFfaBrftASvHQ5QZK/Z0Gf/Ut94++Hf62qV89adBhWTZJHsoMW02sk6b7OZNI0k3lh9c4FA68suOb5mt15JpNJ0+wvKJJqgxasFDfpXEcO/nLgwC/H6t5ONQEQ56g/yw8dPHjgwIHjbpJsHBqkJO1VJC//sm/v3r17y9RPHWBsuaG6Yd9e/eEGkuqnuKDEcmcdSe6YXlJSXFT8cvNs8YCk76qmFRWXFBXNO0SStTebg5G2+6mvragoryivqK2LhGdZ6K6sKK8oL6+o1/HnjCBEW0SS6pNVq5cve+qZdSf3iBeY5PryyaVLly5b+eweRZL3S9Ah3at0zc88cL/+qeP7ffj0/vvvf+DBBx94hfqKLkFHyDdKp1xul8vldrtVTaQX8phSLpfb5Xa7XAZqsyPI0GbVklQfd23TvlOn7E6dOq9vniyeYrfWDOiY3Sm7U3bbjB67SfLyZAku0r8lycoxmmnEu5v1B907MsXIcvOF+i2bt2zesnllK7HcUktSfZESVMitDSTVqw4g8sEtus1f1L6fIgKINuP3si82b968ZfNnPU1Awk+KZN1cCSIkupwkL6YAgGiGpgeaKuYlhoblvqcO5GiGIgAw2EWSZWFBhP2fJNm4QHSec0r/vHDx+Om6s2q1CV7LRkVSPWcNHsbU6L5Ogvft9776kHvD8QPzXCs175BzhCSrhwQNsZ+SZPU0+LJnTXFz/qdb+/pmfqiZJD+IDBamXtJ9Fu1L1r4NBn1cK00+IGuv7sL4ICFkF0nW9YKv2aVGfd2rfNLmKpLcbgsKZJGbpFqqtZxrpeYLzN8qku57JBjIbSDJg8niU9Y+D81P+ya5f5JkTU4QEPEqSdbcaobP4Y+vMjraB77bVzST5D/CAt+o87ofktGCYfkGV3TUWgC5R3XnhgS80I9JsmkiWlQrac7/bGuqoCW1xYok33EGOJneSFK9Z/dNogXauOb8T7emomUTDurqxktgS6sgyT9aw2eZevg60Yr+GzKgkSTPxAc06zpFsvlhs2+td7h+7iWdDuT++6mQFoLtVTdJtdQSwGRAGUnu7gif5ZpLF25YF2IamDw+FhBzi0hhGUme6BnAQl52k1S3mnwxDRy/Re1Peq/EYtLMkDb3fdCrJWBfp0i6nnMGLOlTT1IddsLXHr8pcpX0+HnfGA3S+pz7yD9CpAXQtpokawokUMXsJMkLPeGrjK0h1Y0iUUVvZ7Yt2aJqpr/+WFpLyPVNJPldRICSh90k1WrNJ9MCN6kmCmBecPvXlS7uzYq7Y7i0AOybde47A9SVv5Hk0Vz47NhEUs0WAEl7FckvkjFojk1rARl5gSSPdghIzuXNJF2P23xyXt+gW6vDFXtI9VY0Wj3xyIQQ3xD1mptk4+P2ACR5Z0mqk63gq/XBapLq6FjopaSZVYUatLTcR8dovqHXZZI81VkC0GdKN1Z8KjpPUr2RKAAESNjGc8kCAMkb4sU3WaZIqrcDj0xWJNUHGnxN20ZSveIQANbrwqANPH5xJAy7LJ8Q4xMiDpKkq1gCTbv9JHm6P3yVe9wkeeKRFECiMyG5pieaHtF0Io5BUxw+YdplktyZHmDMjzSRdK13+GQ5rHRsftICCDBtrGS53o8GoPXvBG3iNeJT/Me6hntMgaVTKUmeyYNevHA8rGh4rkSDPscUN/qP7RkA0O2ZVFgWD7T7grEXSXJvh4Aia9wk1f0mXfxdw51GMvocDdViJwAxSdot72xa/1K8ztz9cSvsEyY4fXG+rnM9LQFEejWQ5C47ADG9VnV6jRiEvawM1JkoANK/74pTF5+Ki9+Yq4P0uxawzpsoPkhKFUnWXSGBI/pHRfLSSAGk74/qu9EnFzh1GftpdK8AoYsuN6n6r5JgvneKBsBiFQ1A+nJfIHc0klTfhAcM8011JN2vRQGJt32uuKv9sJ8XRQHmpY0eegiQ+djFph9uaweYJ8wTAOmDzQAQ8trVNh+Q9h1J1s41BYq2PyqSFYMEthfq3OTRXC3vvffsMq6Bxg3hAkkZWtGw2A4A1jgAcDwySgAgdc7t4T5ocy+TVN+1ChByt5uk2mgC+peR5KneVoR9ujZtpzJSDaECSGYFq6dbAUB0yDvXRQMA8/W3i3eI+I4km2+SwND+LEkeTwdsT7h0vxYMBFpver2ShurkgRAAMSsbyMs32+A58ejWjjp0/d4q3km/yyR5olVAsH6mSDZNFUjaMZKqekH4IAF6HnMbqAtzHhQAXU+SZPk4AaRNNADpfu5fobq4PXc6vINpqSKp3jEHAJnQQFJ9GgtL+22KVF8kOG7oLUDM21SVtVS/dU4ZI4A2s1bHj+IASVwSCcBSXldoB4BBW5+N8g6tDpFk/RjxfylfkGTleM0yuUyR5CemHk/aAJlXzc2Fq1TVCMnqLJDWP/zgIuk+MwCANmseIHmKVYtTAcBx17XineXOWpLq40S/J3NqSap/hyF2C6lINkREJwnQ+qz6KE1K1LEuiIkAZPm4cZdIHl9xhwBIfyVK5E6SDavCACBmcaR3SNtJktVTxd/Zj5JkQ45omYddFRvfVTymWa2A+f3LG6JFlqmyXACQmXu0rHJSTc+dqEOUWWSTItl8owUAOvwjNNTsDSa5SHK/xc+ZlyuSrkck4todl15KtVytam42ZSQj5OZz4yOG25L2sqK7LvL56+XqS6TKs0QaQIYM+lnHpsUJAHDrmz8sjgZEAEuMBZYPFEm10OTfBtSS5I/JMuqPpudicu03uz9Jmj9VtMf2zbN0Lza1OcSDHXXOHJvMveiimiMwlo1n62lY/5hTAHPHq398JsLeNVEc89fM7CSdT5NkdU+/FvYhSdbO0eTuhkXRhWbtrbrRsQfbaIuP9xaTCLRNTY9bdHpL2J9U/zF50BYqeqxd4BQAssR1/AKr1nxUNThiVop1kZsk33H6MbnmvO4/SYh7d3vr3Eyk/bzB0qdj9O1niuyhkyKA0C++T4Bnia0lT7b2IJvppTo32QYg5M2qDdlTPv1yvBntp0R3OaArLxL/FfIVSTaPhPRfkzk5E+j3ZhwcPd/5eazz+lECYOhvfcRIBDBNe7PxRCtdB01Cq7yhOjFNAMRed7CVRCWZAGTP73KXIqk+d/gtudFNUv3LJPHv5mg2gTaxUNCzZmNbrf+6SACOZQ9o0EtEFysALfvUlyYAMuT+sHY0dDfrqBoWCADTiMdCYRy3emSpIumaKv4q8wJJnkix9v6hd58XNCB8ciSQkyGQlHAAiL05Fnrr0I2doI84ep8AgDZjQauLBnV7LuhYcXaBE4CYzR5wxZcra0jyXIafCtlAkvX3mCcfuCvr2/ECWKMBiEj7m9Kht0RBb5ld1ksMwg73M0D6M9/QUG27t1J38cFTcwTeS/+DO10k+azdPw05q/up7dQL62PWFNoAZCZAwoelXvn5lldtOo/dlvU2wbDt4XAjCb/bbcDme0dUkVRLlleOEA+ig9bhkWO6sv5+Kex1knTfdfO5Z9vNbSuAhL/cylTwg3vL/ldtD/QRb2xWgfG4zwUetQXlSsfaQXdeJNUfV75dP95u1K2dDQDEulyR5MYQf1RyWffVvS9PcJg1AMjp7zSXlClSrbV2uCfCGy8tSx71As5x2xt03Fkw4yjZeH3rN04NF4PoO+5sB7Fq0rpMd3GYH4o4rkhean9jtMAwtF906MO/k6TaGWIuXm03kPAim3hK/aqnAJoRTEkDdyiSTYsdA2uo3ouMfP91u+gQvfpgvMx8JVSKFElVGup3zEsUSdfTosGjZnV+rqg/dI0GGbQqHoDZOaBrpJFEps/bmQxo4+MFQJQVkPwzJHkq13bvRe7tKIMOb4g1QLsPJojt+RtFNimS6n6Tv+l+giQPdIG3jnsU1SVSDRMA0iYTQHz/1rcJ9JK85qszP6cA6HRHEiDzrrcDMmtrFcl3LKE3nDndC6bsxY9HG8DWGbC00mTI7yR5rJufCVnrItn8gMWrjg9sOPB1rxe+XBsBLy2jFuUBEHP3FY+9kD//+3YAzPOfFEjmjgIA5tRhhxQbx4glf+siDbB0zTDyHLrRTbJ5ucOvSEEVSf4WA6/FWBPxBqbpQwWS8eHx737qJY7HrxQArXZdLZDEgmgAkNT9zeoHG6Tkjx4aWrLrBZIs7+pXQraQpPvunL9i4YicnJzFCwpzcnNycib/s0tOTk6XjTs75+Tk5C/IMRyx6dfKETk5A7afLc5p0dcUSbXJ7kfkxmadOlL6lz1Sanyk/nBpaWnpieZDpaWlpYdLjY+Uu34tLS09z3OlLXqS+qYZ4j/anGAAPpbmN+xLGgNRw8M2PyFXHmdAPpwtfuIlFaDX+Yve/foH5H5X+Yn/ybNgtPGIfllOEZ/6jfZ+aKwHe68xw2K8yh4zugWH2ryQDqMj/dar56sqKysrqyrLT+1ekq75IF9XVp339khvD4kfVh3t5Y08dt5jZVVV5XnjQ/Fe2N6sfFD8lGxSXDR8+PBRc9bsO+9qXNXW5N1OxS/f9/LlTh6Sv2ZFf28w/X3j9yrJ/7xv/FKkJ8mqY3WS/1IlYugc+Vqde1eR+JKniZdoMfFo2qFUN02M4cVLiup+kz+DoUTPruW5qeKLoAV986zpBD5nXT5azR2t/R+gTatheX/xM9oTNZO2smaKBACEr29W/47zMxm7vrTdpfiJIxAg/yxrRolf0aZc6CeJ51VdXwkE8q7iW/4l5NXtArlLqW2mgHCt4vkQ7zTx/DfJPjNTgNBjVMMDQqqb7lzxZnxnz0l/D1m+JwuA3O/ie6GBwHxBqWJ409zkean8LWJrVlkAoNtRnikMBFKu1HivNiz2PBx/B+2BqoHQO553u5fZA4C9hmqYeJOniee/RcrPXzoM0K+OJ1sFgCxFlemdoAX/ShMuDNXE0LRZqYXi/+YqHtPgN8Je+rOk2LjkYcWqVL9n30w+Kf6jY9mlKi9rqJZo/q6wnH90g9+Qh/cXJHlZfIm/ZPq52DdU84oQ/xFZtsIhXiZ+rOpuNvkzsT9Rq7a3h9+QWyqGwFttfh2/jPNjkvBanTqYKf4jave3Tq8Q9ysbRoj/ucZiNpvtEWnXHnDXfpgq8GFwQrznOKs354vivUwwtZCMrRwv3skCN7+x+pkP3OqtRQsXLlz+Zmlz9Zc3xAu8c/Pnb772vKmrN417vvby22TxsN3tVegLe53wMfKwah4tfgUby04bnird8nD/ZBO8l8/LTnu9r6eHhHdOe38m3dOHZWc6e9Hmu2nii8w7ffotu3/xUjQR+FuBz4L/mVAMdSICiGgQPSCaAAKIaAaaaIB4BASAQACICEREIJpIgEmd02Nwp55zBNrAcflDYkP65A64ImXUpBkT7UXjBvUJT5nnDO3TbUBnARKH9SyMdt7Ye1D3vNsLh6QlTAlHUjfbhAwtp3u3PmED5hRMiMkc2qtPSGDp/GxsXMLEdzSYbp9nTwl9ZLKz9czo1Jvu7eB8clTywtEZn4UuvtbRboYGjF8ac2Vs6Juto9LHfRw95fmY5zpL/5zQlQVpTyfZi9Nmr7G3Dbv3lphuYUYi/kBM/00Pb8+dJBPe0mC6bcU92WHn0wVmyPzbYX+80Hr/+PTPki8kAmYACRuOzHKEfnbjfBn7b23Yh9qNtzuGJ4Quz5/9qMCkzdp0W6Jkf7JzpNlIL3pNbzJp3spfp/tTK1t+hcOg06oIkQlv6+aYxFmWLYDRk3c+ujwq/bOE3zMFepu5/buTQ19LFYzdNvmV9sj5Mn2UKXR5/oSnTYDMXK0JbOaeX/Q2SF+3evXqVas9r1q+bOkzTz/5xJLFixY++kgH+auI9t+EYec1MfEZE9+1ZsXdPs+aEXXdQ+G5fSHX6Qb1Xhed8VnorfeF5fcEtDHFMffODn2jVUT22E3pz7UVy5sLCxC6siBxdYeQYWGz11g7J0ztm7RmkOgMxVjTNJPZYrU5nCGhYRGRUdFW+M/EyYXFOd1mFE6KuqpkwOhoS48Zo8OAXj3FPCjLWpycfI3T2nPGqDAAsSNKCsNDpg0qzu88ydTvKkjGRCuso1Kl9cTJHUxXTR44PTLt6uKedgR0ERH4KiLQCwTeC4xFRGAsEPz/8gEAVlA4IJoCAABwHACdASq+AL4APu12tVWppySjIPQIsTAdiWVu4W8b9IDse78SfGB4G0B6gNsB5gOhF5x3UG+gB5aXsZf4H8Zsxz8Ufzr8Lf0T+1nqZRcoYrwpbwpbwoPmozaM8029PUpkOVTMPm6QnhFFG8ukyAF6qnG/wFO/DKccE/LYAELVPTuix84S6h/wh1fDE32ipdrkl15/r6lP3aGglsKnsWeTUtU4vpMPGZELZS1jpeFLeG87cEMDb+JCim6/6gN0BRMif4pEqe14n8xGSlJUb+JmVswe70HL4E2owuViVSG1y/9w/ORUHS1ITg8DIAD+/c5RR+iZoRizvIq87Ryvjukh6OisBa7cyKi0r5Ql4hHrvHVR55fUpCrzQTYPDSNksQXHCzlB/ByTOqFg42dpVJjceuoIqzk+m74LyH+SS4vwuWnNgfVM5vGNVVDjxBowr0Dh/KdnJ9EtDCDNOc0oAtJSrcDKBy/QsEzUybpi7PceBGffhzDgzS8+liboJBgU5z50dR+hVtZ3x3/kLXqHSewlQcrxVYG03m97PWWHi2QlLYL5eTgRi5KJf/1B3/9Ppf/9UdF/rEuI6DAQZuB4MA39hOoXjHtcf70APxb0GO1drHkj8n3AmOHHzjGmQlX8f8m+GKcrp3mWF55hgibxwk6lPdeQW/+ETYudCeLVwN7+3pBmM9W/GMyKX+U4lX6yu6ahSWe+f1Bzm3NpXbSR3NuwTE4fcKE7GI3kEXUK6+BNGgKABM85Bn8DiZT7kAzX0lZikOFf2vdNnlKu5kBwrf9FbY9sUJ3bMpGztxO5DbzPqTztomPyoyRLzciezT3Wv49ZecAXzs0BmFo+oBpajhbrb0lfZ5qpZiM6AAgAzouvjKAOGJVnkVAAAAA=" alt="Delta Electric Services logo" class="de-logo-footer" width="110" height="110"><p class="de-footer-name">Delta Electric Services</p><p class="de-footer-text">Licensed Electrician · NM License #425178</p><p class="de-footer-text">Serving Red River, Angel Fire, Eagle Nest &amp; Taos County, NM</p></div><div><p class="de-footer-text"><span class="de-footer-link">(575) 754-8967</span> · <span class="de-footer-link">deltaelectricnm@gmail.com</span></p><p class="de-footer-text">© 2026 Delta Electric Services. All rights reserved.</p></div></div></footer>
+</div>
+<div class="arch-bar"><a href="#top-case" class="arch-back">← Back to the case study</a><span>Static archive: phone, email and form are shown as delivered but don't contact the client.</span></div>
+</div>
+
+<script>
+(function(){
+  var C=2*Math.PI*40;
+  [["gauges",[["Performance",98],["Accessibility",98],["Best Practices",100],["SEO",100],["Agentic Browsing","2/2",1]]],
+   ["gauges-d",[["Performance",100],["Accessibility",98],["Best Practices",100],["SEO",100],["Agentic Browsing","2/2",1]]]].forEach(function(set){
+  var row=document.getElementById(set[0]);
+  set[1].forEach(function(d){
+    var pct = d[2]!==undefined ? d[2] : d[1]/100;
+    var el=document.createElement("div"); el.className="gauge";
+    el.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" fill="none" stroke="#d9efe1" stroke-width="9"/>'+
+      '<circle cx="50" cy="50" r="40" fill="none" stroke="#1f8a4c" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+(C*pct)+' '+C+'" transform="rotate(-90 50 50)"/>'+
+      '<text x="50" y="58" text-anchor="middle" class="val">'+d[1]+'</text></svg><div class="lab">'+d[0]+'</div>';
+    el.setAttribute("aria-label",d[0]+": "+d[1]);
+    row.appendChild(el);
+  });
+  });
+})();
+(function(){
+  var cs=document.getElementById("case"), lv=document.getElementById("launch-view");
+  function route(){
+    var on=location.hash==="#launch-site";
+    lv.hidden=!on; cs.hidden=on;
+    if(on) window.scrollTo(0,0);
+  }
+  window.addEventListener("hashchange",route); route();
+  var f=document.getElementById("bt-archive-form");
+  if(f) f.addEventListener("submit",function(e){e.preventDefault();document.getElementById("bt-note").hidden=false;});
+  lv.addEventListener("click",function(e){
+    var j=e.target.closest("[data-jump]"); if(!j) return;
+    e.preventDefault(); var t=document.getElementById(j.dataset.jump);
+    if(t) t.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  });
+})();
+</script>
+</body>
+</html>
